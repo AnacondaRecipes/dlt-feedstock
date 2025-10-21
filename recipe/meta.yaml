@@ -70,6 +70,8 @@ requirements:
   "test_current_base_python",
   # upstream bug in _uuid_expr_for_dialect
   "test_simple_model_normalizing",
+  # assumes unprivileged runner 
+  "test_hard_link_fallback",  # [linux]
 ] %}
 
 {% set tests_requiring_connection = [
@@ -112,6 +114,7 @@ test:
     - sentry-sdk >=2.0.0,<3
     - sqlfluff >=2.3.2           # [py<313]
     - cryptography >=41.0.7,<42  # [py<313]
+    - git  # [linux]
   commands:
     - dlt --help
     - pip check
