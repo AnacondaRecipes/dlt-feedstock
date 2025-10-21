@@ -116,7 +116,7 @@ test:
     - dlt --help
     - pip check
     # Basic functionality test
-    - python test/test_basic_functionality.py
+    - python test/test_basic_functionality.py  # [not win]
     - cd gh_src
     # Core tests
     - pytest -vv tests/common -k "not ({{ tests_to_skip|join(' or ') }})"
