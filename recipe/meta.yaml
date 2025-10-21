@@ -110,8 +110,8 @@ test:
     - sqlalchemy <2
     - snowflake-connector-python
     - sentry-sdk >=2.0.0,<3
-    - sqlfluff >=2.3.2
-    - cryptography >=41.0.7,<42
+    - sqlfluff >=2.3.2           # [py<313]
+    - cryptography >=41.0.7,<42  # [py<313]
   commands:
     - dlt --help
     - pip check
@@ -122,8 +122,9 @@ test:
     - pytest -vv tests/common -k "not ({{ tests_to_skip|join(' or ') }})"
     - pytest -vv tests/normalize -k "not ({{ tests_to_skip|join(' or ') }})"
     # Snowflake-specific tests
-    - pytest -vv tests/load/snowflake -k "not ({{ tests_requiring_connection|join(' or ') }})"
-    - pytest -vv tests/load/pipeline/test_snowflake_pipeline.py -k "not ({{ tests_requiring_connection|join(' or ') }})"
+    # missing sqlfluff and cryptography for py313
+    - pytest -vv tests/load/snowflake -k "not ({{ tests_requiring_connection|join(' or ') }})"  # [py<313]
+    - pytest -vv tests/load/pipeline/test_snowflake_pipeline.py -k "not ({{ tests_requiring_connection|join(' or ') }})"  # [py<313]
 
 about:
   summary: dlt is an open-source python-first scalable data loading library that does not require any backend to run.
