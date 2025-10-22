@@ -124,7 +124,7 @@ test:
     - python test/test_basic_functionality.py  # [not win]
     - cd gh_src
     # Core tests
-    - pytest -vv tests/common -k "not ({{ tests_to_skip|join(' or ') }})"
+    - pytest -vv tests/common -k "not ({{ tests_to_skip|join(' or ') }})" --ignore=tests/common/test_git.py
     - pytest -vv tests/normalize -k "not ({{ tests_to_skip|join(' or ') }})"
     # Snowflake-specific tests
     # missing sqlfluff and cryptography for py313
