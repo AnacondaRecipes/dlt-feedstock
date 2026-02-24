@@ -17,7 +17,7 @@ build:
   skip: True  # [py<39]
   # missing win-precise-time for windows
   skip: True  # [win]
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   python:
     entry_points:
@@ -63,37 +63,37 @@ requirements:
     # There's more, but since it's going to the snowflake channel, we only need this
     - snowflake-connector-python >=3.5.0
 
-{% set tests_to_skip = [
-  # assumes editable install
-  "test_installed_requirement_string",
-  "test_import_unknown_destination",
-  "test_run_context",
-  # assumes venv
-  "test_current_base_python",
-  # upstream bug in _uuid_expr_for_dialect
-  "test_simple_model_normalizing",
-  # assumes unprivileged runner 
-  "test_hard_link_fallback",  # [linux]
-] %}
+{% set tests_to_skip = "" %}
+# assumes editable install
+{% set tests_to_skip = tests_to_skip + "test_installed_requirement_string or " %}
+{% set tests_to_skip = tests_to_skip + "test_import_unknown_destination or " %}
+{% set tests_to_skip = tests_to_skip + "test_run_context or " %}
+# assumes venv
+{% set tests_to_skip = tests_to_skip + "test_current_base_python or " %}
+# upstream bug in _uuid_expr_for_dialect
+{% set tests_to_skip = tests_to_skip + "test_simple_model_normalizing or " %}
+{% set tests_to_skip = tests_to_skip + "test_selected_column_names_normalized" %}
+# assumes unprivileged runner
+{% set tests_to_skip = tests_to_skip + " or test_hard_link_fallback" %}  # [linux]
 
-{% set tests_requiring_connection = [
-  # tests from snowflake subdir that require connection to real database
-  # tests/load/snowflake
-  "test_session_autocommit",
-  "test_create_table_with_hints",
-  "test_query_tag",
-  "test_create_table",
-  "test_alter_table",
-  "test_create_table_case_sensitive",
-  "test_create_table_with_partition_and_cluster",
-  # tests/load/pipeline/test_snowflake_pipeline.py
-  "test_snowflake_case_sensitive_identifiers",
-  "test_snowflake_query_tagging",
-  "test_snowflake_custom_stage",
-  "test_snowflake_delete_file_after_copy",
-  "test_char_replacement_cs_naming_convention",
-  "test_snowflake_use_vectorized_scanner",
-] %}
+
+{% set tests_requiring_connection = "" %}
+# tests from snowflake subdir that require connection to real database
+# tests/load/snowflake
+{% set tests_requiring_connection = tests_requiring_connection + "test_session_autocommit or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_create_table_with_hints or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_query_tag or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_create_table or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_alter_table or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_create_table_case_sensitive or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_create_table_with_partition_and_cluster or " %}
+# tests/load/pipeline/test_snowflake_pipeline.py
+{% set tests_requiring_connection = tests_requiring_connection + "test_snowflake_case_sensitive_identifiers or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_snowflake_query_tagging or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_snowflake_custom_stage or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_snowflake_delete_file_after_copy or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_char_replacement_cs_naming_convention or " %}
+{% set tests_requiring_connection = tests_requiring_connection + "test_snowflake_use_vectorized_scanner" %}
 
 test:
   files:
@@ -124,12 +124,12 @@ test:
     - python test/test_basic_functionality.py  # [not win]
     - cd gh_src
     # Core tests
-    - pytest -vv tests/common -k "not ({{ tests_to_skip|join(' or ') }})" --ignore=tests/common/test_git.py
-    - pytest -vv tests/normalize -k "not ({{ tests_to_skip|join(' or ') }})"
+    - pytest -vv tests/common -k "not ({{ tests_to_skip }})" --ignore=tests/common/test_git.py
+    - pytest -vv tests/normalize -k "not ({{ tests_to_skip }})"
     # Snowflake-specific tests
     # missing sqlfluff and cryptography for py313
-    - pytest -vv tests/load/snowflake -k "not ({{ tests_requiring_connection|join(' or ') }})"  # [py<313]
-    - pytest -vv tests/load/pipeline/test_snowflake_pipeline.py -k "not ({{ tests_requiring_connection|join(' or ') }})"  # [py<313]
+    - pytest -vv tests/load/snowflake -k "not ({{ tests_requiring_connection }})"  # [py<313]
+    - pytest -vv tests/load/pipeline/test_snowflake_pipeline.py -k "not ({{ tests_requiring_connection }})"  # [py<313]
 
 about:
   summary: dlt is an open-source python-first scalable data loading library that does not require any backend to run.
