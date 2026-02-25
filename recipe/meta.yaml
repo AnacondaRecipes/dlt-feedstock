@@ -118,7 +118,7 @@ test:
     - pytest-mock >=3.14.0,<4
     # Relax pytest-asyncio version constraint to allow for newer versions.
     - pytest-asyncio >=0.23.5,<1.1.0
-    - sqlalchemy <2
+    - sqlalchemy <2  # [py<314]
     - snowflake-connector-python
     - sentry-sdk >=2.0.0,<3
     - sqlfluff >=2.3.2           # [py<313]
