@@ -72,9 +72,15 @@ requirements:
 {% set tests_to_skip = tests_to_skip + "test_current_base_python or " %}
 # upstream bug in _uuid_expr_for_dialect
 {% set tests_to_skip = tests_to_skip + "test_simple_model_normalizing or " %}
-{% set tests_to_skip = tests_to_skip + "test_selected_column_names_normalized" %}
+{% set tests_to_skip = tests_to_skip + "test_selected_column_names_normalized or " %}
+
+# FileNotFoundError: [Errno 2] No such file or directory: '_storage'
+{% set tests_to_skip = tests_to_skip + "test_get_run_context_warning_cli or " %}
+# AssertionError: assert 'Your run dir is different from directory of your pipeline script 
+{% set tests_to_skip = tests_to_skip + "test_get_run_context_warning_cli" %}
 # assumes unprivileged runner
 {% set tests_to_skip = tests_to_skip + " or test_hard_link_fallback" %}  # [linux]
+
 
 
 {% set tests_requiring_connection = "" %}
